@@ -1,0 +1,26 @@
+<h1>Tasks</h1>
+
+<% if flash[:notice] %>
+  <p><%= flash[:notice] %></p>
+<% end %>
+
+<ul>
+  <% @tasks.each do |task| %>
+    <li>
+      <%= task.name %>
+      <%= task.status ? ' (Complete)' : ' (Incomplete)' %> 
+      <%= link_to 'Complete', complete_task_path(task), method: :patch, data: { confirm: "Are you sure you want to mark this task as complete?" } %>
+    </li>
+  <% end %>
+</ul>
+
+<h2>Create a New Task</h2>
+<%= form_with(model: @task, local: true) do |form| %>
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+  <div>
+    <%= form.submit 'Create Task' %>
+  </div>
+<% end %>
