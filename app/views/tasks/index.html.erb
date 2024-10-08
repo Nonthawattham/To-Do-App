@@ -1,26 +1,44 @@
-<h1>Tasks</h1>
+<h1 style="text-align: center; font-size: 2em; font-weight: bold;">TODOS</h1>
 
-<% if flash[:notice] %>
-  <p><%= flash[:notice] %></p>
-<% end %>
+<div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+</div>
 
-<ul>
+<div style="margin-bottom: 20px;">
+  <%= form_with(model: @task, local: true) do |form| %>
+    <div style="display: flex;">
+      <%= form.text_field :name, placeholder: "Name", style: "flex-grow: 1; margin-right: 10px;" %>
+      <%= form.submit 'Create Todo', class: 'btn', style: "background-color: blue; color: white;" %>
+    </div>
+  <% end %>
+</div>
+
+
+<ul style="list-style-type: none; padding: 0;">
   <% @tasks.each do |task| %>
-    <li>
-      <%= task.name %>
-      <%= task.status ? ' (Complete)' : ' (Incomplete)' %> 
-      <%= link_to 'Complete', complete_task_path(task), method: :patch, data: { confirm: "Are you sure you want to mark this task as complete?" } %>
-    </li>
+    <% if !task.status %>
+      <li style="display: flex; justify-content: space-between; align-items: center;">
+        <span><%= task.name %></span>
+        <div>
+          <%= link_to '✓', complete_task_path(task), method: :patch, data: { confirm: "Are you sure you want to mark this task as complete?" }, style: "margin-right: 10px;" %>
+          <%= link_to '🗑️', task_path(task), method: :delete, data: { confirm: "Are you sure you want to delete this task?" } %>
+        </div>
+      </li>
+    <% end %>
   <% end %>
 </ul>
 
-<h2>Create a New Task</h2>
-<%= form_with(model: @task, local: true) do |form| %>
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-  <div>
-    <%= form.submit 'Create Task' %>
-  </div>
-<% end %>
+
+<h2>Complete</h2>
+<ul style="list-style-type: none; padding: 0;">
+  <% @tasks.each do |task| %>
+    <% if task.status %>
+      <li style="display: flex; justify-content: space-between; align-items: center;">
+        <span><%= task.name %></span>
+        <div>
+          <%= link_to '✖️', undo_task_path(task), method: :patch, data: { confirm: "Are you sure you want to mark this task as incomplete?" }, style: "margin-right: 10px;" %>
+          <%= link_to '🗑️', task_path(task), method: :delete, data: { confirm: "Are you sure you want to delete this task?" } %>
+        </div>
+      </li>
+    <% end %>
+  <% end %>
+</ul>

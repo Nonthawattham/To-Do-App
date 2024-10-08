@@ -5,7 +5,6 @@ class TasksController < ApplicationController
   end
 
   def create
-    
     @task = Task.new(task_params.merge(status: false)) 
     if @task.save
       flash[:notice] = "Task was successfully created."
@@ -20,7 +19,6 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
 
     if @task.update(status: true) 
-      puts "Task #{ @task.id } marked as complete!"
       flash[:notice] = "Task was marked as complete!"
     else
       flash[:alert] = "There was an error marking the task as complete."
@@ -29,10 +27,31 @@ class TasksController < ApplicationController
     redirect_to tasks_path
   end
 
+  def undo
+    @task = Task.find(params[:id])
+
+    if @task.update(status: false) 
+      flash[:notice] = "Task was marked as incomplete!"
+    else
+      flash[:alert] = "There was an error marking the task as incomplete."
+    end
+
+    redirect_to tasks_path
+  end
+
+  def destroy
+    @task = Task.find(params[:id])
+    if @task.destroy
+      flash[:notice] = "Task was successfully deleted."
+    else
+      flash[:alert] = "There was an error deleting the task."
+    end
+    redirect_to tasks_path
+  end
+
   private
 
   def task_params
-    
     params.require(:task).permit(:name)
   end
 end
